@@ -3,9 +3,8 @@
 (function () {
     const COLS = 10;
     const ROWS = 20;
-    const BLOCK_SIZE = 30;
+    const BLOCK_SIZE = 36; // 360px x 720px 해상도 최적화
 
-    // 7종 테트로미노 형태 및 색상 정의
     const SHAPES = {
         I: [[0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0]],
         J: [[1, 0, 0], [1, 1, 1], [0, 0, 0]],
@@ -17,16 +16,15 @@
     };
 
     const COLORS = {
-        I: '#06b6d4', // Cyan
-        J: '#3b82f6', // Blue
-        L: '#f97316', // Orange
-        O: '#eab308', // Yellow
-        S: '#22c55e', // Green
-        T: '#a855f7', // Purple
-        Z: '#ef4444'  // Red
+        I: '#06b6d4',
+        J: '#3b82f6',
+        L: '#f97316',
+        O: '#eab308',
+        S: '#22c55e',
+        T: '#a855f7',
+        Z: '#ef4444'
     };
 
-    // DOM 요소 캐싱
     const canvas = document.getElementById('tetris-board');
     const ctx = canvas.getContext('2d');
     const nextCanvas = document.getElementById('tetris-next');
@@ -47,7 +45,6 @@
     const btnPause = document.getElementById('btn-pause');
     const btnReset = document.getElementById('btn-reset');
 
-    // 게임 상태 변수
     let grid = createGrid();
     let currentPiece = null;
     let nextPiece = null;
@@ -80,16 +77,11 @@
         };
     }
 
-    // 블록 회전 행렬 연산
     function rotate(matrix) {
         const N = matrix.length;
-        const result = matrix.map((row, i) =>
-            row.map((val, j) => matrix[N - 1 - j][i])
-        );
-        return result;
+        return matrix.map((row, i) => row.map((val, j) => matrix[N - 1 - j][i]));
     }
 
-    // 충돌 검사
     function collide(grid, piece, offsetX = 0, offsetY = 0, newShape = null) {
         const shape = newShape || piece.shape;
         for (let y = 0; y < shape.length; y++) {
@@ -97,20 +89,14 @@
                 if (shape[y][x]) {
                     const targetX = piece.x + x + offsetX;
                     const targetY = piece.y + y + offsetY;
-
-                    if (targetX < 0 || targetX >= COLS || targetY >= ROWS) {
-                        return true;
-                    }
-                    if (targetY >= 0 && grid[targetY][targetX]) {
-                        return true;
-                    }
+                    if (targetX < 0 || targetX >= COLS || targetY >= ROWS) return true;
+                    if (targetY >= 0 && grid[targetY][targetX]) return true;
                 }
             }
         }
         return false;
     }
 
-    // 블록 고정 및 라인 제거
     function merge(grid, piece) {
         piece.shape.forEach((row, y) => {
             row.forEach((value, x) => {
@@ -128,13 +114,12 @@
                 grid.splice(y, 1);
                 grid.unshift(Array(COLS).fill(0));
                 linesCleared++;
-                y++; // 행이 아래로 밀려나므로 같은 인덱스 재검사
+                y++;
             }
         }
 
         if (linesCleared > 0) {
             lines += linesCleared;
-            // 테트리스 점수 공식
             const lineScores = [0, 100, 300, 500, 800];
             score += (lineScores[linesCleared] || 100) * level;
 
@@ -157,26 +142,24 @@
         }
     }
 
-    // 렌더링 함수
     function drawBlock(c, x, y, color, size = BLOCK_SIZE) {
         c.fillStyle = color;
         c.fillRect(x * size, y * size, size, size);
 
-        // 입체 효과 테두리
-        c.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+        // 은은한 네온 입체 테두리
+        c.strokeStyle = 'rgba(255, 255, 255, 0.3)';
         c.lineWidth = 2;
         c.strokeRect(x * size + 1, y * size + 1, size - 2, size - 2);
 
-        c.strokeStyle = 'rgba(0, 0, 0, 0.3)';
+        c.strokeStyle = 'rgba(0, 0, 0, 0.4)';
         c.strokeRect(x * size + 2, y * size + 2, size - 4, size - 4);
     }
 
     function draw() {
-        // 메인 보드 배경
-        ctx.fillStyle = '#0b0f19';
+        ctx.fillStyle = '#090d16';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // 그리드 보조선
+        // 그리드 라인
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
         ctx.lineWidth = 1;
         for (let x = 0; x < COLS; x++) {
@@ -192,54 +175,47 @@
             ctx.stroke();
         }
 
-        // 고정된 블록 렌더링
+        // 배치된 블록
         grid.forEach((row, y) => {
             row.forEach((value, x) => {
-                if (value) {
-                    drawBlock(ctx, x, y, value);
-                }
+                if (value) drawBlock(ctx, x, y, value);
             });
         });
 
-        // 고스트 피스(낙하 예상 지점 가이드) 렌더링
+        // 고스트 피스
         if (currentPiece && isPlaying && !isPaused) {
             let ghostY = 0;
-            while (!collide(grid, currentPiece, 0, ghostY + 1)) {
-                ghostY++;
-            }
+            while (!collide(grid, currentPiece, 0, ghostY + 1)) ghostY++;
             currentPiece.shape.forEach((row, y) => {
                 row.forEach((val, x) => {
                     if (val) {
-                        ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
+                        ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
                         ctx.fillRect((currentPiece.x + x) * BLOCK_SIZE, (currentPiece.y + y + ghostY) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
                     }
                 });
             });
         }
 
-        // 현재 조작 중인 블록 렌더링
+        // 현재 조작 피스
         if (currentPiece) {
             currentPiece.shape.forEach((row, y) => {
                 row.forEach((val, x) => {
-                    if (val) {
-                        drawBlock(ctx, currentPiece.x + x, currentPiece.y + y, currentPiece.color);
-                    }
+                    if (val) drawBlock(ctx, currentPiece.x + x, currentPiece.y + y, currentPiece.color);
                 });
             });
         }
 
-        // 다음 블록 미리보기 렌더링
         drawNextPiece();
     }
 
     function drawNextPiece() {
-        nextCtx.fillStyle = '#0b0f19';
+        nextCtx.fillStyle = '#090d16';
         nextCtx.fillRect(0, 0, nextCanvas.width, nextCanvas.height);
 
         if (!nextPiece) return;
 
         const shape = nextPiece.shape;
-        const size = 24;
+        const size = 28;
         const offsetX = (nextCanvas.width - shape[0].length * size) / 2;
         const offsetY = (nextCanvas.height - shape.length * size) / 2;
 
@@ -248,15 +224,14 @@
                 if (val) {
                     nextCtx.fillStyle = nextPiece.color;
                     nextCtx.fillRect(offsetX + x * size, offsetY + y * size, size, size);
-                    nextCtx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
-                    nextCtx.lineWidth = 1;
+                    nextCtx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+                    nextCtx.lineWidth = 1.5;
                     nextCtx.strokeRect(offsetX + x * size + 1, offsetY + y * size + 1, size - 2, size - 2);
                 }
             });
         });
     }
 
-    // 메인 게임 루프
     function gameLoop(time = 0) {
         if (!isPlaying || isPaused) return;
 
@@ -285,7 +260,7 @@
         if (!isPlaying || isPaused || !currentPiece) return;
         while (!collide(grid, currentPiece, 0, 1)) {
             currentPiece.y++;
-            score += 2; // 하드 드롭 추가 점수
+            score += 2;
         }
         merge(grid, currentPiece);
         clearLines();
@@ -309,7 +284,6 @@
     function rotatePiece() {
         if (!isPlaying || isPaused || !currentPiece) return;
         const rotated = rotate(currentPiece.shape);
-        // Wall kick 기본 처리 (좌/우 보정)
         if (!collide(grid, currentPiece, 0, 0, rotated)) {
             currentPiece.shape = rotated;
         } else if (!collide(grid, currentPiece, -1, 0, rotated)) {
@@ -326,7 +300,6 @@
         currentPiece = nextPiece || getRandomPiece();
         nextPiece = getRandomPiece();
 
-        // 생성 직후 충돌 시 게임 오버
         if (collide(grid, currentPiece, 0, 0)) {
             gameOver();
         }
@@ -345,10 +318,10 @@
         nextPiece = getRandomPiece();
         spawnPiece();
 
-        btnStart.textContent = '게임 중...';
+        btnStart.innerHTML = '<i class="fa-solid fa-gamepad"></i> 진행 중';
         btnStart.disabled = true;
         btnPause.disabled = false;
-        btnPause.textContent = '일시 정지';
+        btnPause.innerHTML = '<i class="fa-solid fa-pause"></i> 일시 정지';
 
         statusBadge.textContent = 'PLAYING';
         statusBadge.className = 'tetris-badge playing';
@@ -364,7 +337,7 @@
         isPaused = !isPaused;
 
         if (isPaused) {
-            btnPause.textContent = '계속 하기';
+            btnPause.innerHTML = '<i class="fa-solid fa-play"></i> 계속 하기';
             statusBadge.textContent = 'PAUSED';
             statusBadge.className = 'tetris-badge paused';
             overlayTitle.textContent = 'PAUSED';
@@ -373,7 +346,7 @@
             btnOverlayAction.textContent = '계속 진행';
             overlay.classList.remove('hidden');
         } else {
-            btnPause.textContent = '일시 정지';
+            btnPause.innerHTML = '<i class="fa-solid fa-pause"></i> 일시 정지';
             statusBadge.textContent = 'PLAYING';
             statusBadge.className = 'tetris-badge playing';
             overlay.classList.add('hidden');
@@ -387,7 +360,7 @@
         isPaused = false;
         cancelAnimationFrame(animationFrameId);
 
-        btnStart.textContent = '새 게임';
+        btnStart.innerHTML = '<i class="fa-solid fa-play"></i> 새 게임';
         btnStart.disabled = false;
         btnPause.disabled = true;
 
@@ -413,10 +386,10 @@
         lines = 0;
         updateStats();
 
-        btnStart.textContent = '게임 시작';
+        btnStart.innerHTML = '<i class="fa-solid fa-play"></i> 게임 시작';
         btnStart.disabled = false;
         btnPause.disabled = true;
-        btnPause.textContent = '일시 정지';
+        btnPause.innerHTML = '<i class="fa-solid fa-pause"></i> 일시 정지';
 
         statusBadge.textContent = 'READY';
         statusBadge.className = 'tetris-badge';
@@ -424,10 +397,8 @@
         draw();
     }
 
-    // 키보드 이벤트 리스너
     window.addEventListener('keydown', (e) => {
         if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) {
-            // 게임 중 스크롤 방지
             if (isPlaying && !isPaused) e.preventDefault();
         }
 
@@ -441,7 +412,6 @@
         }
     });
 
-    // 버튼 이벤트 연결
     btnStart.addEventListener('click', startGame);
     btnPause.addEventListener('click', togglePause);
     btnReset.addEventListener('click', resetGame);
@@ -453,7 +423,6 @@
         }
     });
 
-    // 모바일 터치 컨트롤러 이벤트 연결
     document.querySelectorAll('.touch-btn').forEach(btn => {
         const action = btn.getAttribute('data-action');
         btn.addEventListener('click', (e) => {
@@ -468,6 +437,5 @@
         });
     });
 
-    // 초기 화면 그리기
     draw();
 })();

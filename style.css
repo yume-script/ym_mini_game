@@ -1,0 +1,323 @@
+/* plugins/metadata/tetris_game/style.css */
+
+.tetris-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100%;
+    padding: 1.5rem;
+    background-color: var(--app-bg-main);
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.tetris-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 1.5rem;
+    justify-content: center;
+    align-items: flex-start;
+    max-width: 800px;
+    width: 100%;
+}
+
+/* 카드 공통 스타일 */
+.tetris-main-card,
+.tetris-card {
+    background: var(--app-bg-card);
+    border: 1px solid var(--app-border);
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* 메인 보드 */
+.tetris-main-card {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.tetris-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.tetris-title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--app-text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tetris-badge {
+    background: var(--app-border);
+    color: var(--app-text-muted);
+    font-size: 0.75rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    font-weight: 600;
+}
+
+.tetris-badge.playing {
+    background: var(--app-accent);
+    color: #ffffff;
+}
+
+.tetris-badge.paused {
+    background: #f59e0b;
+    color: #ffffff;
+}
+
+/* 캔버스 컨테이너 */
+.tetris-canvas-wrapper {
+    position: relative;
+    border: 2px solid var(--app-border);
+    border-radius: 6px;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+#tetris-board {
+    display: block;
+    background-color: #0b0f19;
+}
+
+/* 오버레이 */
+.tetris-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(11, 15, 25, 0.88);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #ffffff;
+    z-index: 10;
+    text-align: center;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.tetris-overlay.hidden {
+    display: none;
+}
+
+.tetris-overlay h2 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.75rem;
+    color: #ef4444;
+}
+
+.tetris-overlay p {
+    margin: 0 0 1.5rem 0;
+    color: #cbd5e1;
+    font-size: 0.95rem;
+}
+
+/* 사이드바 */
+.tetris-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 220px;
+}
+
+.tetris-card {
+    padding: 1rem;
+}
+
+.tetris-card h4 {
+    margin: 0 0 0.75rem 0;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--app-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* 다음 블록 카드 */
+.next-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.next-canvas-wrapper {
+    background-color: #0b0f19;
+    border: 1px solid var(--app-border);
+    border-radius: 6px;
+    padding: 4px;
+}
+
+#tetris-next {
+    display: block;
+}
+
+/* 통계 아이템 */
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.stat-item:last-child {
+    margin-bottom: 0;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: var(--app-text-muted);
+    font-weight: 600;
+}
+
+.stat-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--app-text-primary);
+}
+
+/* 버튼 스타일 */
+.action-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.tetris-btn {
+    width: 100%;
+    padding: 0.65rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s ease, transform 0.1s ease;
+}
+
+.tetris-btn:active {
+    transform: scale(0.98);
+}
+
+.tetris-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.tetris-btn.primary {
+    background-color: var(--app-accent);
+    color: #ffffff;
+}
+
+.tetris-btn.primary:hover:not(:disabled) {
+    background-color: var(--app-accent-hover);
+}
+
+.tetris-btn.secondary {
+    background-color: var(--app-border);
+    color: var(--app-text-primary);
+}
+
+.tetris-btn.danger {
+    background-color: #ef4444;
+    color: #ffffff;
+}
+
+/* 키보드 도움말 */
+.help-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--app-text-muted);
+}
+
+.help-card li {
+    margin-bottom: 0.4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+kbd {
+    background-color: var(--app-border);
+    color: var(--app-text-primary);
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-family: inherit;
+    border: 1px solid var(--app-border-light);
+}
+
+/* 모바일 터치 컨트롤 (반응형) */
+.tetris-touch-controls {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 1.5rem;
+    width: 100%;
+    max-width: 320px;
+}
+
+.touch-row {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.touch-btn {
+    flex: 1;
+    height: 52px;
+    background: var(--app-bg-card);
+    border: 1px solid var(--app-border);
+    border-radius: 8px;
+    color: var(--app-text-primary);
+    font-size: 1.25rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    touch-action: manipulation;
+}
+
+.touch-btn:active {
+    background: var(--app-accent);
+    color: #ffffff;
+}
+
+.touch-btn.hard-drop {
+    font-size: 0.9rem;
+    font-weight: 700;
+    background: var(--app-accent);
+    color: #ffffff;
+    border: none;
+}
+
+@media (max-width: 680px) {
+    .tetris-wrapper {
+        flex-direction: column;
+        align-items: center;
+    }
+    .tetris-sidebar {
+        width: 300px;
+    }
+    .tetris-touch-controls {
+        display: flex;
+    }
+    .help-card {
+        display: none;
+    }
+}

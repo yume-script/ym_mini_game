@@ -1,0 +1,35 @@
+<div class="mini-app-container">
+    <!-- 상단 와이드 헤더 배너 -->
+    <div class="mini-top-banner">
+        <div class="banner-left">
+            <div class="banner-icon-box">
+                <i id="banner-main-icon" class="fa-solid fa-gamepad"></i>
+            </div>
+            <div class="banner-info">
+                <div class="banner-title-row">
+                    <h2 class="banner-title">미니게임 아케이드</h2>
+                    <span class="banner-version">v1.0.0</span>
+                    <span id="app-status-badge" class="mini-badge">READY</span>
+                </div>
+                <p class="banner-desc">북오아시스 미니게임 허브 · 게임 선택 시 즉시 로드됩니다.</p>
+            </div>
+        </div>
+
+        <div class="banner-actions">
+            <!-- 🎮 게임 선택 드롭다운 (백엔드 스캔으로 자동 채워짐) -->
+            <div class="game-select-wrapper">
+                <i class="fa-solid fa-gamepad select-icon"></i>
+                <select id="game-selector" class="game-dropdown">
+                    <option value="">게임 목록을 불러오는 중...</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🕹️ 동적 게임 마운트 뷰포트 -->
+    <div id="game-viewport" class="game-viewport">
+        <div class="loading-state">
+            <i class="fa-solid fa-spinner fa-spin"></i> 게임 엔진을 불러오는 중...
+        </div>
+    </div>
+</div>

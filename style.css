@@ -1,0 +1,156 @@
+/* plugins/metadata/ym_mini_game/style.css */
+
+.mini-app-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100%;
+    padding: 1.5rem 2rem;
+    box-sizing: border-box;
+    background-color: var(--app-bg-main);
+    gap: 1.5rem;
+}
+
+.mini-top-banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 1.25rem 1.5rem;
+    background: var(--app-bg-card);
+    border: 1px solid var(--app-border);
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    box-sizing: border-box;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.banner-left {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+}
+
+.banner-icon-box {
+    width: 52px;
+    height: 52px;
+    background: var(--app-accent);
+    color: #ffffff;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.6rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.banner-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.banner-title-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.banner-title {
+    margin: 0;
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--app-text-primary);
+}
+
+.banner-version {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--app-text-muted);
+}
+
+.mini-badge {
+    background: var(--app-border);
+    color: var(--app-text-muted);
+    font-size: 0.72rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.mini-badge.playing { background: var(--app-accent); color: #ffffff; }
+.mini-badge.paused { background: #f59e0b; color: #ffffff; }
+.mini-badge.won { background: #10b981; color: #ffffff; }
+.mini-badge.lost { background: #ef4444; color: #ffffff; }
+
+.banner-desc {
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--app-text-muted);
+}
+
+.game-select-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.game-select-wrapper .select-icon {
+    position: absolute;
+    left: 1rem;
+    color: var(--app-accent);
+    font-size: 1.1rem;
+    pointer-events: none;
+}
+
+.game-dropdown {
+    appearance: none;
+    background: var(--app-input-bg, var(--app-bg-main));
+    color: var(--app-text-primary);
+    border: 2px solid var(--app-accent);
+    border-radius: 8px;
+    padding: 0.65rem 2.5rem 0.65rem 2.8rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+}
+
+.game-viewport {
+    width: 100%;
+    min-height: 500px;
+}
+
+.loading-state {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--app-text-muted);
+    font-size: 1.1rem;
+    font-weight: 600;
+    height: 300px;
+}
+
+/* 모든 하위 게임이 공통으로 사용하는 스타일 */
+.btn-banner {
+    padding: 0.6rem 1.1rem;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    transition: all 0.2s ease;
+}
+.btn-banner:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn-banner.primary { background: var(--app-accent); color: #ffffff; }
+.btn-banner.secondary { background: var(--app-bg-card-hover); border-color: var(--app-border); color: var(--app-text-primary); }
+.btn-banner.danger { background: #ef4444; color: #ffffff; }

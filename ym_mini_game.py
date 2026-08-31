@@ -108,28 +108,30 @@ def build_mini_game_bundle():
 .btn-banner.secondary.active-flag { background: #ef4444; color: #ffffff; }
 .btn-banner.danger { background: #ef4444; color: #ffffff; }
 """
-        # 각 하위 게임 CSS 병합
-        for g in game_entries:
-            base_css += f"\n\n/* === [Game: {g['id']}] === */\n{g['css']}"
+    # 각 하위 게임 CSS 병합
+    for g in game_entries:
+        base_css += f"\n\n/* === [Game: {g['id']}] === */\n{g['css']}"
 
-        with open(os.path.join(base_dir, "style.css"), "w", encoding="utf-8") as f:
-            f.write(base_css)
+    with open(os.path.join(base_dir, "style.css"), "w", encoding="utf-8") as f:
+        f.write(base_css)
 
-        # 3. script.js 생성
-        js_bundle = """// Auto-generated MiniGame Hub
+    # 3. script.js 생성
+    js_bundle = """// Auto-generated MiniGame Hub
 (function () {
     const GameData = """ + json.dumps(game_entries, ensure_ascii=False) + """;
     const GameRegistry = {};
     window.YmMiniGameHub = {
-        register(gameId, handler) {
+        register(gameId, meta, handler) {
+            // meta(name/icon/order)는 manifest.json에서 이미 GameData로 로드되어 있으므로
+            // 여기서는 실제 실행 함수(handler)만 저장한다.
             GameRegistry[gameId] = handler;
         }
     };
 """
-        for g in game_entries:
-            js_bundle += f"\n// --- Game Script: {g['id']} ---\n{g['js']}\n"
+    for g in game_entries:
+        js_bundle += f"\n// --- Game Script: {g['id']} ---\n{g['js']}\n"
 
-        js_bundle += """
+    js_bundle += """
     const selectorEl = document.getElementById('game-selector');
     const viewportEl = document.getElementById('game-viewport');
     const bannerIcon = document.getElementById('banner-main-icon');
@@ -181,8 +183,8 @@ def build_mini_game_bundle():
     init();
 })();
 """
-        with open(os.path.join(base_dir, "script.js"), "w", encoding="utf-8") as f:
-            f.write(js_bundle)
+    with open(os.path.join(base_dir, "script.js"), "w", encoding="utf-8") as f:
+        f.write(js_bundle)
 
 
 # 서버 로드시 games/ 폴더 자동 빌드 실행

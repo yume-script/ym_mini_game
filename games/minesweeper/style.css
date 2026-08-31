@@ -6,7 +6,7 @@
 }
 .mine-board-frame {
     position: relative; background: #090d16; border: 2px solid var(--app-border);
-    border-radius: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35); padding: 12px;
+    border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.35); padding: 12px;
     display: flex; flex-direction: column; align-items: center; max-width: 100%; overflow-x: auto;
 }
 .board-hud {

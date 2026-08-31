@@ -175,7 +175,7 @@ def build_mini_game_bundle():
 
         const handler = GameRegistry[gameId];
         if (typeof handler === 'function') {
-            activeInstance = handler(viewportEl, setStatusBadge);
+            activeInstance = handler(viewportEl, { setStatusBadge });
             if (activeInstance && activeInstance.init) activeInstance.init();
         }
     }

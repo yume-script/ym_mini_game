@@ -1,4 +1,4 @@
 # -*- coding: utf-8 -*-
-from .tetris_game import TetrisGamePlugin
+from .ym_mini_game import YmMiniGamePlugin
 
-__all__ = ["TetrisGamePlugin"]
+__all__ = ["YmMiniGamePlugin"]

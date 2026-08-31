@@ -1,3 +1,7 @@
+<!-- 테트리스 & 지뢰찾기 개별 스타일 로드 -->
+<link rel="stylesheet" href="/plugins/metadata/ym_mini_game/games/tetris/style.css">
+<link rel="stylesheet" href="/plugins/metadata/ym_mini_game/games/minesweeper/style.css">
+
 <div class="mini-app-container">
     <!-- 상단 와이드 헤더 배너 -->
     <div class="mini-top-banner">
@@ -11,25 +15,23 @@
                     <span class="banner-version">v1.0.0</span>
                     <span id="app-status-badge" class="mini-badge">READY</span>
                 </div>
-                <p class="banner-desc">북오아시스 미니게임 허브 · 게임 선택 시 즉시 로드됩니다.</p>
+                <p class="banner-desc">북오아시스 미니게임 허브 · 드롭다운으로 게임을 선택하세요.</p>
             </div>
         </div>
 
         <div class="banner-actions">
-            <!-- 🎮 게임 선택 드롭다운 (백엔드 스캔으로 자동 채워짐) -->
+            <!-- 🎮 게임 선택 드롭다운 (등록된 게임들이 자동 감지됨) -->
             <div class="game-select-wrapper">
                 <i class="fa-solid fa-gamepad select-icon"></i>
-                <select id="game-selector" class="game-dropdown">
-                    <option value="">게임 목록을 불러오는 중...</option>
-                </select>
+                <select id="game-selector" class="game-dropdown"></select>
             </div>
         </div>
     </div>
 
     <!-- 🕹️ 동적 게임 마운트 뷰포트 -->
-    <div id="game-viewport" class="game-viewport">
-        <div class="loading-state">
-            <i class="fa-solid fa-spinner fa-spin"></i> 게임 엔진을 불러오는 중...
-        </div>
-    </div>
+    <div id="game-viewport" class="game-viewport"></div>
 </div>
+
+<!-- 테트리스 & 지뢰찾기 개별 독립 엔진 로드 -->
+<script src="/plugins/metadata/ym_mini_game/games/tetris/game.js"></script>
+<script src="/plugins/metadata/ym_mini_game/games/minesweeper/game.js"></script>

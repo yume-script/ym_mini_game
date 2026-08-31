@@ -123,21 +123,8 @@
 
 .game-viewport {
     width: 100%;
-    min-height: 500px;
 }
 
-.loading-state {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.75rem;
-    color: var(--app-text-muted);
-    font-size: 1.1rem;
-    font-weight: 600;
-    height: 300px;
-}
-
-/* 모든 하위 게임이 공통으로 사용하는 스타일 */
 .btn-banner {
     padding: 0.6rem 1.1rem;
     border-radius: 8px;

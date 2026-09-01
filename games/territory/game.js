@@ -32,7 +32,7 @@ window.YmMiniGameHub.register('territory', {
                     <div class="panel-header"><i class="fa-regular fa-lightbulb"></i> 게임 방법</div>
                     <p class="tip-text">
                         • 테두리(안전지대)에서 나가 선을 그은 뒤 다시 안전지대로 돌아오면, 그 선이 감싼 영역이 내 땅이 됩니다.<br>
-                        • 선을 긋는 도중 적(빨간 점)이 그 선에 닿으면 목숨을 하나 잃고 처음 위치로 돌아갑니다.<br>
+                        • 선을 긋는 도중 쥐가 그 선에 닿으면 목숨을 하나 잃고 처음 위치로 돌아갑니다.<br>
                         • 내가 그리던 선을 스스로 다시 밟아도 목숨을 잃습니다.<br>
                         • 목표 점령률에 도달하면 다음 레벨(적 증가·속도 상승)로 넘어갑니다.
                     </p>
@@ -304,12 +304,59 @@ window.YmMiniGameHub.register('territory', {
         ctx.arc(player.x * CELL + CELL / 2, player.y * CELL + CELL / 2, CELL / 2.4, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.fillStyle = '#ef4444';
         enemies.forEach(e => {
-            ctx.beginPath();
-            ctx.arc(e.x * CELL + CELL / 2, e.y * CELL + CELL / 2, CELL / 2.6, 0, Math.PI * 2);
-            ctx.fill();
+            drawMouse(e.x * CELL + CELL / 2, e.y * CELL + CELL / 2, e.dx, e.dy);
         });
+    }
+
+    function drawMouse(cx, cy, dx, dy) {
+        // 이동 방향으로 자연스럽게 향하도록 회전 (대각선 이동이라도 부드럽게 보이게 각도 계산)
+        const angle = Math.atan2(dy || 0.0001, dx || 0.0001);
+        const r = CELL / 2.3;
+
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(angle);
+
+        // 꼬리 (진행 방향 반대쪽으로 살짝 흔들리는 곡선)
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = Math.max(1, CELL * 0.05);
+        ctx.beginPath();
+        ctx.moveTo(-r * 0.85, 0);
+        ctx.quadraticCurveTo(-r * 1.6, r * 0.55, -r * 2.1, r * 0.05);
+        ctx.stroke();
+
+        // 몸통
+        ctx.fillStyle = '#cbd5e1';
+        ctx.beginPath();
+        ctx.ellipse(0, 0, r * 0.95, r * 0.68, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 귀 (양쪽)
+        ctx.fillStyle = '#f9a8d4';
+        ctx.beginPath();
+        ctx.arc(r * 0.35, -r * 0.55, r * 0.34, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(r * 0.35, r * 0.55, r * 0.34, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 코
+        ctx.fillStyle = '#f472b6';
+        ctx.beginPath();
+        ctx.arc(r * 0.95, 0, r * 0.16, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 눈
+        ctx.fillStyle = '#1f2937';
+        ctx.beginPath();
+        ctx.arc(r * 0.4, -r * 0.18, r * 0.09, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(r * 0.4, r * 0.18, r * 0.09, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
     }
 
     function loop(time = 0) {

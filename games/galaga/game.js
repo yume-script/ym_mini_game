@@ -82,6 +82,7 @@ window.YmMiniGameHub.register('galaga', {
     const INVASION_LINE = H - 110;
 
     const ROW_COLORS = ['#f472b6', '#fbbf24', '#34d399', '#60a5fa'];
+    const ROW_COLORS_LIGHT = ['#fce7f3', '#fef3c7', '#d1fae5', '#dbeafe'];
     const ROW_POINTS = [80, 60, 40, 20];
 
     let canvas, ctx;
@@ -351,43 +352,155 @@ window.YmMiniGameHub.register('galaga', {
         ctx.globalAlpha = 1;
 
         // 플레이어
-        ctx.fillStyle = '#38bdf8';
-        ctx.beginPath();
-        ctx.moveTo(player.x + player.w / 2, player.y);
-        ctx.lineTo(player.x + player.w, player.y + player.h);
-        ctx.lineTo(player.x, player.y + player.h);
-        ctx.closePath();
-        ctx.fill();
+        drawPlayer();
 
         // 적
-        enemies.forEach(e => {
-            if (!e.alive) return;
-            ctx.fillStyle = ROW_COLORS[e.colorRow];
-            ctx.beginPath();
-            ctx.moveTo(e.x + ENEMY_W / 2, e.y);
-            ctx.lineTo(e.x + ENEMY_W, e.y + ENEMY_H / 2);
-            ctx.lineTo(e.x + ENEMY_W / 2, e.y + ENEMY_H);
-            ctx.lineTo(e.x, e.y + ENEMY_H / 2);
-            ctx.closePath();
-            ctx.fill();
+        enemies.forEach(e => { if (e.alive) drawEnemy(e); });
+
+        // 총알 (레이저 느낌의 발광 효과)
+        ctx.save();
+        ctx.shadowColor = '#facc15';
+        ctx.shadowBlur = 6;
+        ctx.fillStyle = '#fde68a';
+        bullets.forEach(b => {
+            ctx.fillRect(b.x, b.y, b.w, b.h);
         });
+        ctx.restore();
 
-        // 총알
-        ctx.fillStyle = '#facc15';
-        bullets.forEach(b => ctx.fillRect(b.x, b.y, b.w, b.h));
-        ctx.fillStyle = '#f87171';
-        enemyBullets.forEach(b => ctx.fillRect(b.x, b.y, b.w, b.h));
+        ctx.save();
+        ctx.shadowColor = '#f87171';
+        ctx.shadowBlur = 6;
+        ctx.fillStyle = '#fecaca';
+        enemyBullets.forEach(b => {
+            ctx.fillRect(b.x, b.y, b.w, b.h);
+        });
+        ctx.restore();
 
-        // 파티클(폭발)
+        // 파티클(폭발) - 중심 발광 + 바깥 파편
         particles.forEach(p => {
             const alpha = Math.max(0, 1 - p.life / p.maxLife);
             ctx.globalAlpha = alpha;
+            ctx.save();
+            ctx.shadowColor = p.color;
+            ctx.shadowBlur = 8;
             ctx.fillStyle = p.color;
             ctx.beginPath();
-            ctx.arc(p.x, p.y, 2.4, 0, Math.PI * 2);
+            ctx.arc(p.x, p.y, 2.4 * (1 - p.life / p.maxLife * 0.4), 0, Math.PI * 2);
             ctx.fill();
+            ctx.restore();
         });
         ctx.globalAlpha = 1;
+    }
+
+    function drawPlayer() {
+        const cx = player.x + player.w / 2;
+        const topY = player.y;
+        const bottomY = player.y + player.h;
+
+        // 엔진 불꽃 (시간에 따라 깜빡이며 흔들림)
+        const flicker = 0.55 + Math.sin(lastTime / 45) * 0.35 + Math.random() * 0.1;
+        const flameLen = 9 + flicker * 10;
+        const flameGrad = ctx.createLinearGradient(cx, bottomY - 3, cx, bottomY + flameLen);
+        flameGrad.addColorStop(0, 'rgba(191,219,254,0.95)');
+        flameGrad.addColorStop(0.45, 'rgba(96,165,250,0.75)');
+        flameGrad.addColorStop(1, 'rgba(59,130,246,0)');
+        ctx.fillStyle = flameGrad;
+        ctx.beginPath();
+        ctx.moveTo(cx - 5, bottomY - 3);
+        ctx.lineTo(cx, bottomY + flameLen);
+        ctx.lineTo(cx + 5, bottomY - 3);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.save();
+        ctx.shadowColor = 'rgba(56,189,248,0.75)';
+        ctx.shadowBlur = 10;
+
+        // 동체 그라데이션 (위쪽 밝게, 아래쪽 진하게)
+        const bodyGrad = ctx.createLinearGradient(player.x, topY, player.x, bottomY);
+        bodyGrad.addColorStop(0, '#bae6fd');
+        bodyGrad.addColorStop(0.5, '#38bdf8');
+        bodyGrad.addColorStop(1, '#0369a1');
+        ctx.fillStyle = bodyGrad;
+
+        ctx.beginPath();
+        ctx.moveTo(cx, topY);                                   // 기수
+        ctx.lineTo(player.x + player.w, bottomY);               // 오른쪽 날개 끝
+        ctx.lineTo(cx + player.w * 0.16, bottomY - 5);          // 오른쪽 안쪽
+        ctx.lineTo(cx, bottomY - 9);                            // 엔진 노즐 중앙
+        ctx.lineTo(cx - player.w * 0.16, bottomY - 5);          // 왼쪽 안쪽
+        ctx.lineTo(player.x, bottomY);                          // 왼쪽 날개 끝
+        ctx.closePath();
+        ctx.fill();
+
+        // 날개 하이라이트 선 + 중앙 라인
+        ctx.strokeStyle = 'rgba(255,255,255,0.55)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(cx, topY + 2);
+        ctx.lineTo(cx, bottomY - 7);
+        ctx.stroke();
+
+        // 콕핏(캐노피)
+        const cockpitGrad = ctx.createRadialGradient(cx, topY + player.h * 0.4, 0.5, cx, topY + player.h * 0.4, player.w * 0.14);
+        cockpitGrad.addColorStop(0, '#ffffff');
+        cockpitGrad.addColorStop(1, '#7dd3fc');
+        ctx.fillStyle = cockpitGrad;
+        ctx.beginPath();
+        ctx.ellipse(cx, topY + player.h * 0.4, player.w * 0.09, player.h * 0.17, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+    }
+
+    function drawEnemy(e) {
+        const cx = e.x + ENEMY_W / 2;
+        const cy = e.y + ENEMY_H / 2;
+        const color = ROW_COLORS[e.colorRow];
+        const lightColor = ROW_COLORS_LIGHT[e.colorRow];
+        const diving = e.state === 'diving';
+
+        ctx.save();
+        ctx.shadowColor = color;
+        ctx.shadowBlur = diving ? 14 : 5;
+
+        const grad = ctx.createRadialGradient(cx, cy - ENEMY_H * 0.18, 1, cx, cy, ENEMY_W * 0.62);
+        grad.addColorStop(0, lightColor);
+        grad.addColorStop(1, color);
+        ctx.fillStyle = grad;
+
+        // 몸통(곤충형 함선: 머리 - 날개 - 꼬리)
+        ctx.beginPath();
+        ctx.moveTo(cx, e.y);                                     // 머리 끝
+        ctx.lineTo(e.x + ENEMY_W, cy - 1);                       // 오른쪽 날개
+        ctx.lineTo(cx + ENEMY_W * 0.2, e.y + ENEMY_H);           // 오른쪽 꼬리
+        ctx.lineTo(cx - ENEMY_W * 0.2, e.y + ENEMY_H);           // 왼쪽 꼬리
+        ctx.lineTo(e.x, cy - 1);                                 // 왼쪽 날개
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // 더듬이(급강하 중일 때 더 또렷하게)
+        ctx.strokeStyle = diving ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.4)';
+        ctx.beginPath();
+        ctx.moveTo(cx - 3, e.y + 1);
+        ctx.lineTo(cx - 6, e.y - 4);
+        ctx.moveTo(cx + 3, e.y + 1);
+        ctx.lineTo(cx + 6, e.y - 4);
+        ctx.stroke();
+
+        // 눈(발광점)
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = diving ? '#fff7ed' : '#0f172a';
+        ctx.beginPath();
+        ctx.arc(cx - 3, cy, 1.5, 0, Math.PI * 2);
+        ctx.arc(cx + 3, cy, 1.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
     }
 
     // ---------- 게임 흐름 ----------

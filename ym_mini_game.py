@@ -15,6 +15,17 @@ def build_mini_game_bundle():
     if not os.path.exists(games_dir):
         return
 
+    # VERSION 파일의 "plugin version" 값을 읽어 배너에 표시할 버전 문자열로 사용
+    plugin_version = "0.0.0"
+    version_file = os.path.join(base_dir, "VERSION")
+    if os.path.exists(version_file):
+        try:
+            with open(version_file, "r", encoding="utf-8") as f:
+                version_data = json.load(f)
+            plugin_version = version_data.get("plugin version", plugin_version)
+        except Exception as e:
+            logger.error("[ym_mini_game] VERSION 파일 읽기 실패: %s", e)
+
     game_entries = []
     for item in sorted(os.listdir(games_dir)):
         item_path = os.path.join(games_dir, item)
@@ -54,7 +65,7 @@ def build_mini_game_bundle():
     game_entries.sort(key=lambda x: x["order"])
 
     # 1. index.html 생성
-    index_html_content = """<div class="mini-app-container">
+    index_html_content = f"""<div class="mini-app-container">
     <div class="mini-top-banner">
         <div class="banner-left">
             <div class="banner-icon-box">
@@ -63,7 +74,7 @@ def build_mini_game_bundle():
             <div class="banner-info">
                 <div class="banner-title-row">
                     <h2 class="banner-title">미니게임 아케이드</h2>
-                    <span class="banner-version">v1.1.0</span>
+                    <span class="banner-version">v{plugin_version}</span>
                     <span id="app-status-badge" class="mini-badge">READY</span>
                 </div>
                 <p class="banner-desc">북오아시스 미니게임 허브 · 오른쪽 목록에서 게임을 선택하세요.</p>
@@ -248,6 +259,23 @@ class YmMiniGamePlugin(BaseMetadataProvider):
         "icon": "fa-solid fa-gamepad",
         "order": 90,
         "sessions": "all",
+    }
+
+    # 플러그인 개발 가이드의 표준 update_manifest 계약을 그대로 사용합니다.
+    # https://github.com/yume-script/ym_mini_game 저장소 루트에 ym_mini_game.py/
+    # __init__.py/VERSION 이 그대로 올라가 있는 구조(브랜치: main)를 기준으로 설정했습니다.
+    # 코어가 "현재 버전(VERSION의 plugin version) < GitHub 버전"일 때만 환경설정 화면에
+    # 업데이트 버튼을 노출/실행합니다. games/ 하위 개별 게임 파일들은 이 매커니즘이
+    # 다루는 대상이 아니므로(코어 파일 3종만 동기화), 게임 추가/수정 후에는 별도로
+    # 저장소에 반영해야 합니다.
+    update_manifest = {
+        "enabled": True,
+        "provider": "github-raw",
+        "raw_base_url": "https://raw.githubusercontent.com/yume-script/ym_mini_game/main",
+        "files": ["ym_mini_game.py", "__init__.py", "VERSION"],
+        "version_file": "VERSION",
+        "version_key": "plugin version",
+        "show_sample_update_button": True,
     }
 
     def search(self, db_type, query):

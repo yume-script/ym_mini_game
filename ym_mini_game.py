@@ -63,20 +63,21 @@ def build_mini_game_bundle():
             <div class="banner-info">
                 <div class="banner-title-row">
                     <h2 class="banner-title">미니게임 아케이드</h2>
-                    <span class="banner-version">v1.0.0</span>
+                    <span class="banner-version">v1.1.0</span>
                     <span id="app-status-badge" class="mini-badge">READY</span>
                 </div>
-                <p class="banner-desc">북오아시스 미니게임 허브 · 드롭다운으로 게임을 선택하세요.</p>
-            </div>
-        </div>
-        <div class="banner-actions">
-            <div class="game-select-wrapper">
-                <i class="fa-solid fa-gamepad select-icon"></i>
-                <select id="game-selector" class="game-dropdown"></select>
+                <p class="banner-desc">북오아시스 미니게임 허브 · 오른쪽 목록에서 게임을 선택하세요.</p>
             </div>
         </div>
     </div>
-    <div id="game-viewport" class="game-viewport"></div>
+
+    <div class="mini-main-layout">
+        <div id="game-viewport" class="game-viewport"></div>
+        <div class="game-list-sidebar">
+            <div class="game-list-header"><i class="fa-solid fa-list-ul"></i> 게임 목록</div>
+            <div id="game-list" class="game-list"></div>
+        </div>
+    </div>
 </div>"""
     with open(os.path.join(base_dir, "index.html"), "w", encoding="utf-8") as f:
         f.write(index_html_content)
@@ -97,16 +98,49 @@ def build_mini_game_bundle():
 .mini-badge.won { background: #10b981; color: #ffffff; }
 .mini-badge.lost { background: #ef4444; color: #ffffff; }
 .banner-desc { margin: 0; font-size: 0.88rem; color: var(--app-text-muted); }
-.game-select-wrapper { position: relative; display: flex; align-items: center; }
-.game-select-wrapper .select-icon { position: absolute; left: 1rem; color: var(--app-accent); font-size: 1.1rem; pointer-events: none; }
-.game-dropdown { appearance: none; background: var(--app-input-bg, var(--app-bg-main)); color: var(--app-text-primary); border: 2px solid var(--app-accent); border-radius: 8px; padding: 0.65rem 2.5rem 0.65rem 2.8rem; font-size: 0.95rem; font-weight: 700; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>"); background-repeat: no-repeat; background-position: right 0.75rem center; }
-.game-viewport { width: 100%; }
+.game-viewport { width: 100%; min-width: 0; }
 .btn-banner { padding: 0.6rem 1.1rem; border-radius: 8px; border: 1px solid transparent; font-size: 0.88rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 0.45rem; transition: all 0.2s ease; }
 .btn-banner:disabled { opacity: 0.45; cursor: not-allowed; }
 .btn-banner.primary { background: var(--app-accent); color: #ffffff; }
 .btn-banner.secondary { background: var(--app-bg-card-hover); border-color: var(--app-border); color: var(--app-text-primary); }
 .btn-banner.secondary.active-flag { background: #ef4444; color: #ffffff; }
 .btn-banner.danger { background: #ef4444; color: #ffffff; }
+
+/* 메인 레이아웃: 좌측 게임 뷰포트 + 우측 게임 목록 */
+.mini-main-layout { display: flex; align-items: flex-start; gap: 1.5rem; width: 100%; }
+.game-list-sidebar {
+    flex: 0 0 240px; width: 240px; background: var(--app-bg-card); border: 1px solid var(--app-border);
+    border-radius: 12px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08); box-sizing: border-box;
+    display: flex; flex-direction: column; overflow: hidden; position: sticky; top: 1.5rem;
+    max-height: calc(100vh - 3rem);
+}
+.game-list-header {
+    padding: 1rem 1.1rem; font-size: 0.8rem; font-weight: 800; letter-spacing: 0.03em;
+    text-transform: uppercase; color: var(--app-text-secondary); border-bottom: 1px solid var(--app-border-light);
+    display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0;
+}
+.game-list { display: flex; flex-direction: column; gap: 0.35rem; padding: 0.6rem; overflow-y: auto; }
+.game-list-item {
+    display: flex; align-items: center; gap: 0.7rem; padding: 0.65rem 0.75rem; border-radius: 8px;
+    cursor: pointer; color: var(--app-text-primary); background: transparent; border: 1px solid transparent;
+    font-size: 0.88rem; font-weight: 600; transition: background-color 0.15s ease;
+}
+.game-list-item:hover { background: var(--app-bg-card-hover); }
+.game-list-item.active { background: var(--app-accent); color: #ffffff; border-color: var(--app-accent); }
+.game-list-item .game-list-icon {
+    width: 30px; height: 30px; border-radius: 8px; background: var(--app-bg-main);
+    display: flex; align-items: center; justify-content: center; font-size: 0.95rem; flex-shrink: 0;
+    color: var(--app-accent);
+}
+.game-list-item.active .game-list-icon { background: rgba(255,255,255,0.2); color: #ffffff; }
+.game-list-item .game-list-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+@media (max-width: 900px) {
+    .mini-main-layout { flex-direction: column; }
+    .game-list-sidebar { width: 100%; flex: 1 1 auto; position: static; max-height: none; order: -1; }
+    .game-list { flex-direction: row; flex-wrap: wrap; max-height: 160px; overflow-y: auto; }
+    .game-list-item { flex: 0 0 auto; }
+}
 """
     # 각 하위 게임 CSS 병합
     for g in game_entries:
@@ -132,7 +166,7 @@ def build_mini_game_bundle():
         js_bundle += f"\n// --- Game Script: {g['id']} ---\n{g['js']}\n"
 
     js_bundle += """
-    const selectorEl = document.getElementById('game-selector');
+    const listEl = document.getElementById('game-list');
     const viewportEl = document.getElementById('game-viewport');
     const bannerIcon = document.getElementById('banner-main-icon');
     const statusBadge = document.getElementById('app-status-badge');
@@ -146,19 +180,27 @@ def build_mini_game_bundle():
     }
 
     function init() {
-        selectorEl.innerHTML = '';
+        listEl.innerHTML = '';
         GameData.forEach(g => {
-            const opt = document.createElement('option');
-            opt.value = g.id;
-            opt.textContent = g.name;
-            selectorEl.appendChild(opt);
+            const item = document.createElement('div');
+            item.className = 'game-list-item';
+            item.dataset.gameId = g.id;
+            item.innerHTML =
+                '<span class="game-list-icon"><i class="' + g.icon + '"></i></span>' +
+                '<span class="game-list-name">' + g.name + '</span>';
+            item.addEventListener('click', () => mount(g.id));
+            listEl.appendChild(item);
         });
-
-        selectorEl.addEventListener('change', (e) => mount(e.target.value));
 
         if (GameData.length > 0) {
             mount(GameData[0].id);
         }
+    }
+
+    function setActiveListItem(gameId) {
+        listEl.querySelectorAll('.game-list-item').forEach(el => {
+            el.classList.toggle('active', el.dataset.gameId === gameId);
+        });
     }
 
     function mount(gameId) {
@@ -171,6 +213,7 @@ def build_mini_game_bundle():
         activeInstance = null;
 
         if (bannerIcon) bannerIcon.className = game.icon;
+        setActiveListItem(gameId);
         viewportEl.innerHTML = game.html;
 
         const handler = GameRegistry[gameId];

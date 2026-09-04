@@ -311,6 +311,9 @@ window.YmMiniGameHub.register('picture-territory', {
         const nx = player.x + player.dx, ny = player.y + player.dy;
         if (nx < 0 || nx >= COLS || ny < 0 || ny >= ROWS) return;
 
+        // 쥐가 있는 칸으로 이동하면 즉시 충돌 처리 (쥐의 이동 타이밍을 기다리지 않음)
+        if (enemies.some(e => e.x === nx && e.y === ny)) { loseLife(); return; }
+
         const target = grid[ny][nx];
         if (target === TRAIL) { loseLife(); return; }
 
@@ -353,7 +356,7 @@ window.YmMiniGameHub.register('picture-territory', {
                 const v = grid[y][x];
                 const px = x * CELL, py = y * CELL;
                 if (v === CLAIMED) continue; // 이미지가 그대로 드러나도록 덮지 않음
-                ctx.fillStyle = v === TRAIL ? 'rgba(250,204,21,0.55)' : 'rgba(5,8,15,0.87)';
+                ctx.fillStyle = 'rgba(5,8,15,0.87)'; // 미점령/트레일 모두 어둡게 가림(트레일은 아래 얇은 선으로 별도 표시)
                 ctx.fillRect(px, py, CELL, CELL);
             }
         }
@@ -361,6 +364,23 @@ window.YmMiniGameHub.register('picture-territory', {
         ctx.strokeStyle = 'rgba(255,255,255,0.05)';
         for (let x = 0; x <= COLS; x++) { ctx.beginPath(); ctx.moveTo(x * CELL, 0); ctx.lineTo(x * CELL, canvas.height); ctx.stroke(); }
         for (let y = 0; y <= ROWS; y++) { ctx.beginPath(); ctx.moveTo(0, y * CELL); ctx.lineTo(canvas.width, y * CELL); ctx.stroke(); }
+
+        // 그리는 중인 선(트레일)은 두꺼운 칸 채우기 대신 얇은 실선으로 표시
+        if (trailCells.length > 0) {
+            ctx.strokeStyle = 'rgba(250,204,21,0.9)';
+            ctx.lineWidth = 3;
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            const [px0, py0] = trailCells[0];
+            ctx.moveTo(px0 * CELL + CELL / 2, py0 * CELL + CELL / 2);
+            for (let i = 1; i < trailCells.length; i++) {
+                const [tx, ty] = trailCells[i];
+                ctx.lineTo(tx * CELL + CELL / 2, ty * CELL + CELL / 2);
+            }
+            ctx.lineTo(player.x * CELL + CELL / 2, player.y * CELL + CELL / 2);
+            ctx.stroke();
+        }
 
         ctx.fillStyle = '#38bdf8';
         ctx.beginPath();

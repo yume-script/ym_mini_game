@@ -84,7 +84,7 @@ window.YmMiniGameHub.register('picture-territory', {
 
     container.innerHTML = HTML;
 
-    const COLS = 18, ROWS = 27, CELL = 20;
+    const COLS = 30, ROWS = 45, CELL = 12;
     const EMPTY = 0, CLAIMED = 1, TRAIL = 2;
     const TARGET_PERCENT = 75;
 
@@ -105,7 +105,7 @@ window.YmMiniGameHub.register('picture-territory', {
     let lives = 3, score = 0, level = 1, percent = 0;
     let isPlaying = false, isPaused = false, animId = null;
     let lastPlayerMove = 0, lastEnemyMove = 0;
-    let playerInterval = 130, enemyInterval = 200;
+    let playerInterval = 80, enemyInterval = 120;
 
     let coverImage = null;
     let coverImageReady = false;
@@ -284,7 +284,7 @@ window.YmMiniGameHub.register('picture-territory', {
         level++;
         grid = createGrid();
         enemies = spawnEnemies(1 + level);
-        enemyInterval = Math.max(90, 200 - (level - 1) * 12);
+        enemyInterval = Math.max(54, 120 - (level - 1) * 7);
         player = { x: Math.floor(COLS / 2), y: 0, dx: 0, dy: 0 };
         trailCells = [];
         percent = calcPercent();
@@ -327,6 +327,8 @@ window.YmMiniGameHub.register('picture-territory', {
         }
     }
 
+    const DIAG_DIRS = [[1, 1], [1, -1], [-1, 1], [-1, -1]];
+
     function moveEnemies() {
         enemies.forEach(e => {
             let nx = e.x + e.dx, ny = e.y + e.dy;
@@ -343,9 +345,24 @@ window.YmMiniGameHub.register('picture-territory', {
             if (nx < 0 || nx >= COLS || grid[e.y][nx] !== EMPTY) e.dx *= -1;
             if (ny < 0 || ny >= ROWS || grid[ny][e.x] !== EMPTY) e.dy *= -1;
             nx = e.x + e.dx; ny = e.y + e.dy;
+
             if (nx >= 0 && nx < COLS && ny >= 0 && ny < ROWS && grid[ny][nx] === EMPTY) {
                 e.x = nx; e.y = ny;
+            } else {
+                // 양쪽 반사 후에도 여전히 막혀있으면(구석에 몰림) - 멈추는 대신
+                // 이동 가능한 다른 대각선 방향을 찾아 즉시 방향을 틀어 계속 움직이게 함
+                const options = DIAG_DIRS.filter(([ddx, ddy]) => {
+                    const tx = e.x + ddx, ty = e.y + ddy;
+                    return tx >= 0 && tx < COLS && ty >= 0 && ty < ROWS && grid[ty][tx] === EMPTY;
+                });
+                if (options.length > 0) {
+                    const [ddx, ddy] = options[Math.floor(Math.random() * options.length)];
+                    e.dx = ddx; e.dy = ddy;
+                    e.x += ddx; e.y += ddy;
+                }
+                // options가 비어있으면(사방이 완전히 막힘) 이번 틱은 어쩔 수 없이 정지 - 매우 드문 경우
             }
+
             if (grid[e.y][e.x] === TRAIL || (e.x === player.x && e.y === player.y)) {
                 loseLife();
             }
@@ -394,7 +411,7 @@ window.YmMiniGameHub.register('picture-territory', {
 
         ctx.fillStyle = '#38bdf8';
         ctx.beginPath();
-        ctx.arc(player.x * CELL + CELL / 2, player.y * CELL + CELL / 2, CELL / 2.4, 0, Math.PI * 2);
+        ctx.arc(player.x * CELL + CELL / 2, player.y * CELL + CELL / 2, Math.max(6, CELL / 2.4), 0, Math.PI * 2);
         ctx.fill();
 
         enemies.forEach(e => drawMouse(e.x * CELL + CELL / 2, e.y * CELL + CELL / 2, e.dx, e.dy));
@@ -402,7 +419,7 @@ window.YmMiniGameHub.register('picture-territory', {
 
     function drawMouse(cx, cy, dx, dy) {
         const angle = Math.atan2(dy || 0.0001, dx || 0.0001);
-        const r = CELL / 2.3;
+        const r = Math.max(7, CELL / 2.3);
 
         ctx.save();
         ctx.translate(cx, cy);
@@ -447,7 +464,7 @@ window.YmMiniGameHub.register('picture-territory', {
         grid = createGrid();
         level = 1; lives = 3; score = 0;
         enemies = spawnEnemies(2);
-        enemyInterval = 200;
+        enemyInterval = 120;
         player = { x: Math.floor(COLS / 2), y: 0, dx: 0, dy: 0 };
         trailCells = [];
         percent = calcPercent();

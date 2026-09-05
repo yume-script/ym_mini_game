@@ -330,6 +330,16 @@ window.YmMiniGameHub.register('picture-territory', {
     function moveEnemies() {
         enemies.forEach(e => {
             let nx = e.x + e.dx, ny = e.y + e.dy;
+
+            // 진행 방향에 놓인 선(TRAIL)에 닿으면 벽처럼 튕기기 전에 먼저 접촉으로 처리
+            const willTouchTrailX = nx >= 0 && nx < COLS && grid[e.y][nx] === TRAIL;
+            const willTouchTrailY = ny >= 0 && ny < ROWS && grid[ny][e.x] === TRAIL;
+            const willTouchTrailDiag = nx >= 0 && nx < COLS && ny >= 0 && ny < ROWS && grid[ny][nx] === TRAIL;
+            if (willTouchTrailX || willTouchTrailY || willTouchTrailDiag) {
+                loseLife();
+                return;
+            }
+
             if (nx < 0 || nx >= COLS || grid[e.y][nx] !== EMPTY) e.dx *= -1;
             if (ny < 0 || ny >= ROWS || grid[ny][e.x] !== EMPTY) e.dy *= -1;
             nx = e.x + e.dx; ny = e.y + e.dy;

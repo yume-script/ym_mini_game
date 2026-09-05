@@ -383,7 +383,7 @@ window.YmMiniGameHub.register('picture-territory', {
                 const v = grid[y][x];
                 const px = x * CELL, py = y * CELL;
                 if (v === CLAIMED) continue; // 이미지가 그대로 드러나도록 덮지 않음
-                ctx.fillStyle = 'rgba(5,8,15,0.87)'; // 미점령/트레일 모두 어둡게 가림(트레일은 아래 얇은 선으로 별도 표시)
+                ctx.fillStyle = '#05080f'; // 미점령/트레일 모두 완전히 가림(트레일은 아래 얇은 선으로 별도 표시)
                 ctx.fillRect(px, py, CELL, CELL);
             }
         }

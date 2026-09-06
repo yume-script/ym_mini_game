@@ -257,7 +257,7 @@ class YmMiniGamePlugin(BaseMetadataProvider):
     category_tab = {
         "title": "미니게임",
         "icon": "fa-solid fa-gamepad",
-        "order": 90,
+        "order": 32,
         "sessions": "all",
     }
 

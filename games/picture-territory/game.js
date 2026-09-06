@@ -84,7 +84,7 @@ window.YmMiniGameHub.register('picture-territory', {
 
     container.innerHTML = HTML;
 
-    const COLS = 30, ROWS = 45, CELL = 12;
+    const COLS = 60, ROWS = 90, CELL = 6;
     const EMPTY = 0, CLAIMED = 1, TRAIL = 2;
     const TARGET_PERCENT = 75;
 
@@ -105,7 +105,7 @@ window.YmMiniGameHub.register('picture-territory', {
     let lives = 3, score = 0, level = 1, percent = 0;
     let isPlaying = false, isPaused = false, animId = null;
     let lastPlayerMove = 0, lastEnemyMove = 0;
-    let playerInterval = 80, enemyInterval = 120;
+    let playerInterval = 40, enemyInterval = 60;
 
     let coverImage = null;
     let coverImageReady = false;
@@ -284,7 +284,7 @@ window.YmMiniGameHub.register('picture-territory', {
         level++;
         grid = createGrid();
         enemies = spawnEnemies(1 + level);
-        enemyInterval = Math.max(54, 120 - (level - 1) * 7);
+        enemyInterval = Math.max(27, 60 - (level - 1) * 4);
         player = { x: Math.floor(COLS / 2), y: 0, dx: 0, dy: 0 };
         trailCells = [];
         percent = calcPercent();
@@ -388,9 +388,7 @@ window.YmMiniGameHub.register('picture-territory', {
             }
         }
 
-        ctx.strokeStyle = 'rgba(255,255,255,0.05)';
-        for (let x = 0; x <= COLS; x++) { ctx.beginPath(); ctx.moveTo(x * CELL, 0); ctx.lineTo(x * CELL, canvas.height); ctx.stroke(); }
-        for (let y = 0; y <= ROWS; y++) { ctx.beginPath(); ctx.moveTo(0, y * CELL); ctx.lineTo(canvas.width, y * CELL); ctx.stroke(); }
+        // 칸이 촘촘해져서(6px) 개별 격자선은 그리지 않음 (그리면 오히려 지저분해 보임)
 
         // 그리는 중인 선(트레일)은 두꺼운 칸 채우기 대신 얇은 실선으로 표시
         if (trailCells.length > 0) {
@@ -464,7 +462,7 @@ window.YmMiniGameHub.register('picture-territory', {
         grid = createGrid();
         level = 1; lives = 3; score = 0;
         enemies = spawnEnemies(2);
-        enemyInterval = 120;
+        enemyInterval = 60;
         player = { x: Math.floor(COLS / 2), y: 0, dx: 0, dy: 0 };
         trailCells = [];
         percent = calcPercent();

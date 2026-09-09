@@ -39,7 +39,7 @@
 .key-guide-list li:last-child { border-bottom: none; }
 kbd { background: var(--app-bg-main); color: var(--app-text-primary); padding: 0.15rem 0.45rem; border-radius: 4px; font-size: 0.72rem; font-weight: 600; border: 1px solid var(--app-border); }
 
-.center-col { display: flex; justify-content: center; align-items: center; }
+.center-col { display: flex; justify-content: center; align-items: center; min-width: 0; }
 .omok-board-frame {
     position: relative; background: #dcb35c; border: 2px solid #8a5a2b;
     border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.35); overflow: hidden;

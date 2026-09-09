@@ -17,10 +17,19 @@
 .diff-pill.active { background: var(--app-accent); color: #ffffff; }
 
 .sudoku-stage-grid {
-    display: grid; grid-template-columns: 280px 1fr 280px; gap: 1.5rem;
+    display: grid; grid-template-columns: 240px 1fr 240px; gap: 1.5rem;
     width: 100%; max-width: 1350px; margin: 0 auto; align-items: start;
 }
-.stage-col { display: flex; flex-direction: column; gap: 1.25rem; }
+.stage-col { display: flex; flex-direction: column; gap: 1.25rem; position: relative; transition: flex-basis 0.25s ease, width 0.25s ease, min-width 0.25s ease; }
+.stage-col.collapsed { flex: 0 0 40px; width: 40px; min-width: 40px; overflow: hidden; }
+.stage-col.collapsed .panel-content { display: none; }
+.panel-content { display: flex; flex-direction: column; gap: 1.25rem; }
+.panel-toggle-btn {
+    align-self: flex-start; width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--app-border);
+    background: var(--app-bg-card); color: var(--app-text-primary); cursor: pointer;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.panel-toggle-btn:hover { background: var(--app-bg-card-hover); }
 
 .mini-panel-card {
     background: var(--app-bg-card); border: 1px solid var(--app-border);
@@ -41,12 +50,14 @@
 .stat-val.highlight { color: var(--app-accent); }
 .tip-text { font-size: 0.82rem; color: var(--app-text-muted); line-height: 1.6; margin: 0; }
 
-.center-col { display: flex; justify-content: center; align-items: center; }
+.center-col { display: flex; justify-content: center; align-items: center; min-width: 0; }
 .sudoku-board-frame {
     position: relative; background: #fdfaf3; border: 2px solid var(--app-border);
     border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.35); overflow: hidden; padding: 8px;
+    width: 100%; max-width: 600px;
 }
-#sudoku-board { display: block; cursor: pointer; border-radius: 4px; }
+#sudoku-board { display: block; cursor: pointer; border-radius: 4px; width: 100%; height: auto;
+}
 
 .number-pad {
     display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;

@@ -17,7 +17,9 @@ window.YmMiniGameHub.register('picture-territory', {
         </div>
 
         <div class="picture-stage-grid">
-            <div class="stage-col left-col">
+            <div class="stage-col left-col" id="pic-left-col">
+            <button class="panel-toggle-btn" id="pic-toggle-left" title="패널 접기/펼치기"><i class="fa-solid fa-chevron-left"></i></button>
+            <div class="panel-content">
                 <div class="mini-panel-card">
                     <div class="panel-header"><i class="fa-solid fa-chart-simple"></i> STATISTICS</div>
                     <div class="stat-grid">
@@ -46,7 +48,8 @@ window.YmMiniGameHub.register('picture-territory', {
                         • 목표 공개율에 도달하면 다음 레벨로 넘어갑니다.
                     </p>
                 </div>
-            </div>
+            
+            </div></div>
 
             <div class="stage-col center-col">
                 <div class="picture-board-frame">
@@ -59,7 +62,9 @@ window.YmMiniGameHub.register('picture-territory', {
                 </div>
             </div>
 
-            <div class="stage-col right-col">
+            <div class="stage-col right-col" id="pic-right-col">
+            <button class="panel-toggle-btn" id="pic-toggle-right" title="패널 접기/펼치기"><i class="fa-solid fa-chevron-right"></i></button>
+            <div class="panel-content">
                 <div class="mini-panel-card">
                     <div class="panel-header"><i class="fa-regular fa-keyboard"></i> 조작 가이드</div>
                     <ul class="key-guide-list">
@@ -78,7 +83,8 @@ window.YmMiniGameHub.register('picture-territory', {
                         <button class="touch-btn" data-dir="right"><i class="fa-solid fa-arrow-right"></i></button>
                     </div>
                 </div>
-            </div>
+            
+            </div></div>
         </div>
     </div>`;
 
@@ -550,6 +556,17 @@ window.YmMiniGameHub.register('picture-territory', {
         }
     }
 
+    function setupPanelToggle(colId, btnId, iconOpen, iconClosed) {
+        const col = container.querySelector('#' + colId);
+        const btn = container.querySelector('#' + btnId);
+        if (!col || !btn) return;
+        btn.onclick = () => {
+            const collapsed = col.classList.toggle('collapsed');
+            const icon = btn.querySelector('i');
+            if (icon) icon.className = collapsed ? iconClosed : iconOpen;
+        };
+    }
+
     return {
         init() {
             btnStart.onclick = start;
@@ -589,7 +606,11 @@ window.YmMiniGameHub.register('picture-territory', {
             });
 
             reset();
-        },
+        
+
+            setupPanelToggle('pic-left-col', 'pic-toggle-left', 'fa-solid fa-chevron-left', 'fa-solid fa-chevron-right');
+            setupPanelToggle('pic-right-col', 'pic-toggle-right', 'fa-solid fa-chevron-right', 'fa-solid fa-chevron-left');
+},
         destroy() {
             isPlaying = false;
             cancelAnimationFrame(animId);

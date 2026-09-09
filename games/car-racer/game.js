@@ -17,7 +17,9 @@ window.YmMiniGameHub.register('car-racer', {
         </div>
 
         <div class="racer-stage-grid">
-            <div class="stage-col left-col">
+            <div class="stage-col left-col" id="racer-left-col">
+            <button class="panel-toggle-btn" id="racer-toggle-left" title="패널 접기/펼치기"><i class="fa-solid fa-chevron-left"></i></button>
+            <div class="panel-content">
                 <div class="mini-panel-card">
                     <div class="panel-header"><i class="fa-solid fa-chart-simple"></i> 기록</div>
                     <div class="stat-grid">
@@ -35,7 +37,8 @@ window.YmMiniGameHub.register('car-racer', {
                         • 차량과 충돌하면 생명을 하나 잃고 잠시 무적 상태로 다시 출발합니다.
                     </p>
                 </div>
-            </div>
+            
+            </div></div>
 
             <div class="stage-col center-col">
                 <div class="racer-board-frame">
@@ -48,7 +51,9 @@ window.YmMiniGameHub.register('car-racer', {
                 </div>
             </div>
 
-            <div class="stage-col right-col">
+            <div class="stage-col right-col" id="racer-right-col">
+            <button class="panel-toggle-btn" id="racer-toggle-right" title="패널 접기/펼치기"><i class="fa-solid fa-chevron-right"></i></button>
+            <div class="panel-content">
                 <div class="mini-panel-card">
                     <div class="panel-header"><i class="fa-regular fa-keyboard"></i> 조작 안내</div>
                     <ul class="key-guide-list">
@@ -69,7 +74,8 @@ window.YmMiniGameHub.register('car-racer', {
                         <button class="touch-btn" data-action="brake"><i class="fa-solid fa-gauge-simple"></i> 감속</button>
                     </div>
                 </div>
-            </div>
+            
+            </div></div>
         </div>
     </div>`;
 
@@ -409,6 +415,17 @@ window.YmMiniGameHub.register('car-racer', {
     }
     function onKeyUp(e) { keysDown[e.code] = false; }
 
+    function setupPanelToggle(colId, btnId, iconOpen, iconClosed) {
+        const col = container.querySelector('#' + colId);
+        const btn = container.querySelector('#' + btnId);
+        if (!col || !btn) return;
+        btn.onclick = () => {
+            const collapsed = col.classList.toggle('collapsed');
+            const icon = btn.querySelector('i');
+            if (icon) icon.className = collapsed ? iconClosed : iconOpen;
+        };
+    }
+
     return {
         init() {
             btnStart.onclick = start;
@@ -443,7 +460,11 @@ window.YmMiniGameHub.register('car-racer', {
             window.addEventListener('keyup', onKeyUp);
 
             reset();
-        },
+        
+
+            setupPanelToggle('racer-left-col', 'racer-toggle-left', 'fa-solid fa-chevron-left', 'fa-solid fa-chevron-right');
+            setupPanelToggle('racer-right-col', 'racer-toggle-right', 'fa-solid fa-chevron-right', 'fa-solid fa-chevron-left');
+},
         destroy() {
             isPlaying = false;
             cancelAnimationFrame(animId);

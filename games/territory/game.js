@@ -17,7 +17,9 @@ window.YmMiniGameHub.register('territory', {
         </div>
 
         <div class="territory-stage-grid">
-            <div class="stage-col left-col">
+            <div class="stage-col left-col" id="terr-left-col">
+                <button class="panel-toggle-btn" id="terr-toggle-left" title="패널 접기/펼치기"><i class="fa-solid fa-chevron-left"></i></button>
+                <div class="panel-content">
                 <div class="mini-panel-card">
                     <div class="panel-header"><i class="fa-solid fa-chart-simple"></i> STATISTICS</div>
                     <div class="stat-grid">
@@ -37,6 +39,7 @@ window.YmMiniGameHub.register('territory', {
                         • 목표 점령률에 도달하면 다음 레벨(적 증가·속도 상승)로 넘어갑니다.
                     </p>
                 </div>
+                </div>
             </div>
 
             <div class="stage-col center-col">
@@ -50,7 +53,9 @@ window.YmMiniGameHub.register('territory', {
                 </div>
             </div>
 
-            <div class="stage-col right-col">
+            <div class="stage-col right-col" id="terr-right-col">
+                <button class="panel-toggle-btn" id="terr-toggle-right" title="패널 접기/펼치기"><i class="fa-solid fa-chevron-right"></i></button>
+                <div class="panel-content">
                 <div class="mini-panel-card">
                     <div class="panel-header"><i class="fa-regular fa-keyboard"></i> 조작 가이드</div>
                     <ul class="key-guide-list">
@@ -68,6 +73,7 @@ window.YmMiniGameHub.register('territory', {
                         <button class="touch-btn" data-dir="down"><i class="fa-solid fa-arrow-down"></i></button>
                         <button class="touch-btn" data-dir="right"><i class="fa-solid fa-arrow-right"></i></button>
                     </div>
+                </div>
                 </div>
             </div>
         </div>
@@ -248,6 +254,9 @@ window.YmMiniGameHub.register('territory', {
         const nx = player.x + player.dx, ny = player.y + player.dy;
         if (nx < 0 || nx >= COLS || ny < 0 || ny >= ROWS) return;
 
+        // 쥐가 있는 칸으로 이동하면 즉시 충돌 처리 (쥐의 이동 타이밍을 기다리지 않음)
+        if (enemies.some(e => e.x === nx && e.y === ny)) { loseLife(); return; }
+
         const target = grid[ny][nx];
 
         if (target === TRAIL) { loseLife(); return; }
@@ -285,7 +294,6 @@ window.YmMiniGameHub.register('territory', {
             for (let x = 0; x < COLS; x++) {
                 const v = grid[y][x];
                 if (v === CLAIMED) ctx.fillStyle = 'rgba(16,185,129,0.35)';
-                else if (v === TRAIL) ctx.fillStyle = 'rgba(250,204,21,0.75)';
                 else continue;
                 ctx.fillRect(x * CELL, y * CELL, CELL, CELL);
             }
@@ -297,6 +305,23 @@ window.YmMiniGameHub.register('territory', {
         }
         for (let y = 0; y <= ROWS; y++) {
             ctx.beginPath(); ctx.moveTo(0, y * CELL); ctx.lineTo(canvas.width, y * CELL); ctx.stroke();
+        }
+
+        // 그리는 중인 선(트레일)은 두꺼운 칸 채우기 대신 얇은 실선으로 표시
+        if (trailCells.length > 0) {
+            ctx.strokeStyle = 'rgba(250,204,21,0.9)';
+            ctx.lineWidth = 3;
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            const [px0, py0] = trailCells[0];
+            ctx.moveTo(px0 * CELL + CELL / 2, py0 * CELL + CELL / 2);
+            for (let i = 1; i < trailCells.length; i++) {
+                const [tx, ty] = trailCells[i];
+                ctx.lineTo(tx * CELL + CELL / 2, ty * CELL + CELL / 2);
+            }
+            ctx.lineTo(player.x * CELL + CELL / 2, player.y * CELL + CELL / 2);
+            ctx.stroke();
         }
 
         ctx.fillStyle = '#38bdf8';
@@ -459,6 +484,17 @@ window.YmMiniGameHub.register('territory', {
         }
     }
 
+    function setupPanelToggle(colId, btnId, iconOpen, iconClosed) {
+        const col = container.querySelector('#' + colId);
+        const btn = container.querySelector('#' + btnId);
+        if (!col || !btn) return;
+        btn.onclick = () => {
+            const collapsed = col.classList.toggle('collapsed');
+            const icon = btn.querySelector('i');
+            if (icon) icon.className = collapsed ? iconClosed : iconOpen;
+        };
+    }
+
     return {
         init() {
             btnStart.onclick = start;
@@ -481,6 +517,9 @@ window.YmMiniGameHub.register('territory', {
                     if (dir === 'right') setDirection(1, 0);
                 };
             });
+
+            setupPanelToggle('terr-left-col', 'terr-toggle-left', 'fa-solid fa-chevron-left', 'fa-solid fa-chevron-right');
+            setupPanelToggle('terr-right-col', 'terr-toggle-right', 'fa-solid fa-chevron-right', 'fa-solid fa-chevron-left');
 
             window.addEventListener('keydown', onKeyDown);
             reset();

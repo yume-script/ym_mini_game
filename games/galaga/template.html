@@ -9,7 +9,9 @@
     </div>
 
     <div class="galaga-stage-grid">
-        <div class="stage-col left-col">
+        <div class="stage-col left-col" id="gal-left-col">
+            <button class="panel-toggle-btn" id="gal-toggle-left" title="패널 접기/펼치기"><i class="fa-solid fa-chevron-left"></i></button>
+            <div class="panel-content">
             <div class="mini-panel-card">
                 <div class="panel-header"><i class="fa-solid fa-chart-simple"></i> STATISTICS</div>
                 <div class="stat-grid">
@@ -27,7 +29,8 @@
                     <li><span>일시 정지</span> <kbd>P</kbd></li>
                 </ul>
             </div>
-        </div>
+        
+            </div></div>
 
         <div class="stage-col center-col">
             <div class="galaga-board-frame">
@@ -40,7 +43,9 @@
             </div>
         </div>
 
-        <div class="stage-col right-col">
+        <div class="stage-col right-col" id="gal-right-col">
+            <button class="panel-toggle-btn" id="gal-toggle-right" title="패널 접기/펼치기"><i class="fa-solid fa-chevron-right"></i></button>
+            <div class="panel-content">
             <div class="mini-panel-card">
                 <div class="panel-header"><i class="fa-regular fa-lightbulb"></i> 게임 방법</div>
                 <p class="tip-text">
@@ -57,6 +62,7 @@
                     <button class="touch-btn" data-action="right"><i class="fa-solid fa-arrow-right"></i></button>
                 </div>
             </div>
-        </div>
+        
+            </div></div>
     </div>
 </div>

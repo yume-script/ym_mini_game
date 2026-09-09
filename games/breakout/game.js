@@ -17,7 +17,9 @@ window.YmMiniGameHub.register('breakout', {
         </div>
 
         <div class="breakout-stage-grid">
-            <div class="stage-col left-col">
+            <div class="stage-col left-col" id="brk-left-col">
+            <button class="panel-toggle-btn" id="brk-toggle-left" title="패널 접기/펼치기"><i class="fa-solid fa-chevron-left"></i></button>
+            <div class="panel-content">
                 <div class="mini-panel-card">
                     <div class="panel-header"><i class="fa-solid fa-chart-simple"></i> STATISTICS</div>
                     <div class="stat-grid">
@@ -36,7 +38,8 @@ window.YmMiniGameHub.register('breakout', {
                         <li><span><span class="cap-badge" style="background:#fb923c;">M</span> 멀티볼</span></li>
                     </ul>
                 </div>
-            </div>
+            
+            </div></div>
 
             <div class="stage-col center-col">
                 <div class="breakout-board-frame">
@@ -49,7 +52,9 @@ window.YmMiniGameHub.register('breakout', {
                 </div>
             </div>
 
-            <div class="stage-col right-col">
+            <div class="stage-col right-col" id="brk-right-col">
+            <button class="panel-toggle-btn" id="brk-toggle-right" title="패널 접기/펼치기"><i class="fa-solid fa-chevron-right"></i></button>
+            <div class="panel-content">
                 <div class="mini-panel-card">
                     <div class="panel-header"><i class="fa-regular fa-keyboard"></i> 조작 가이드</div>
                     <ul class="key-guide-list">
@@ -66,7 +71,8 @@ window.YmMiniGameHub.register('breakout', {
                         <button class="touch-btn" data-action="right"><i class="fa-solid fa-arrow-right"></i></button>
                     </div>
                 </div>
-            </div>
+            
+            </div></div>
         </div>
     </div>`;
 
@@ -522,6 +528,17 @@ window.YmMiniGameHub.register('breakout', {
         paddle.x = Math.max(4, Math.min(W - paddle.w - 4, px - paddle.w / 2));
     }
 
+    function setupPanelToggle(colId, btnId, iconOpen, iconClosed) {
+        const col = container.querySelector('#' + colId);
+        const btn = container.querySelector('#' + btnId);
+        if (!col || !btn) return;
+        btn.onclick = () => {
+            const collapsed = col.classList.toggle('collapsed');
+            const icon = btn.querySelector('i');
+            if (icon) icon.className = collapsed ? iconClosed : iconOpen;
+        };
+    }
+
     return {
         init() {
             btnStart.onclick = start;
@@ -562,7 +579,11 @@ window.YmMiniGameHub.register('breakout', {
             window.addEventListener('keyup', onKeyUp);
 
             reset();
-        },
+        
+
+            setupPanelToggle('brk-left-col', 'brk-toggle-left', 'fa-solid fa-chevron-left', 'fa-solid fa-chevron-right');
+            setupPanelToggle('brk-right-col', 'brk-toggle-right', 'fa-solid fa-chevron-right', 'fa-solid fa-chevron-left');
+},
         destroy() {
             isPlaying = false;
             cancelAnimationFrame(animId);

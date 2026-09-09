@@ -1,9 +1,19 @@
 /* plugins/metadata/ym_mini_game/games/minesweeper/style.css */
 .mine-game-root { display: flex; flex-direction: column; gap: 1.25rem; width: 100%; }
 .mine-stage-grid {
-    display: grid; grid-template-columns: 280px 1fr 280px; gap: 1.5rem;
+    display: grid; grid-template-columns: 240px 1fr 240px; gap: 1.5rem;
     width: 100%; max-width: 1350px; margin: 0 auto; align-items: start;
 }
+.stage-col { position: relative; transition: flex-basis 0.25s ease, width 0.25s ease, min-width 0.25s ease; }
+.stage-col.collapsed { flex: 0 0 40px; width: 40px; min-width: 40px; overflow: hidden; }
+.stage-col.collapsed .panel-content { display: none; }
+.panel-content { display: flex; flex-direction: column; gap: 1.25rem; }
+.panel-toggle-btn {
+    align-self: flex-start; width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--app-border);
+    background: var(--app-bg-card); color: var(--app-text-primary); cursor: pointer;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-bottom: 1.25rem;
+}
+.panel-toggle-btn:hover { background: var(--app-bg-card-hover); }
 .mine-board-frame {
     position: relative; background: #090d16; border: 2px solid var(--app-border);
     border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.35); padding: 12px;

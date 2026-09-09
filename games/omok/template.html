@@ -9,7 +9,9 @@
     </div>
 
     <div class="omok-stage-grid">
-        <div class="stage-col left-col">
+        <div class="stage-col left-col" id="omok-left-col">
+            <button class="panel-toggle-btn" id="omok-toggle-left" title="패널 접기/펼치기"><i class="fa-solid fa-chevron-left"></i></button>
+            <div class="panel-content">
             <div class="mini-panel-card">
                 <div class="panel-header"><i class="fa-solid fa-chart-simple"></i> STATISTICS</div>
                 <div class="stat-grid">
@@ -28,6 +30,7 @@
                     • 실수했다면 "무르기"로 직전 한 수(내 돌+AI 돌)를 되돌릴 수 있습니다.
                 </p>
             </div>
+            </div>
         </div>
 
         <div class="stage-col center-col">
@@ -41,7 +44,9 @@
             </div>
         </div>
 
-        <div class="stage-col right-col">
+        <div class="stage-col right-col" id="omok-right-col">
+            <button class="panel-toggle-btn" id="omok-toggle-right" title="패널 접기/펼치기"><i class="fa-solid fa-chevron-right"></i></button>
+            <div class="panel-content">
             <div class="mini-panel-card">
                 <div class="panel-header"><i class="fa-regular fa-keyboard"></i> 조작 가이드</div>
                 <ul class="key-guide-list">
@@ -55,6 +60,7 @@
                     <li><span><i class="fa-solid fa-circle" style="color:#111827;"></i> 나 (흑돌)</span></li>
                     <li><span><i class="fa-regular fa-circle" style="color:#f8fafc;"></i> AI (백돌)</span></li>
                 </ul>
+            </div>
             </div>
         </div>
     </div>

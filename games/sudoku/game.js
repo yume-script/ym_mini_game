@@ -20,7 +20,9 @@ window.YmMiniGameHub.register('sudoku', {
         </div>
 
         <div class="sudoku-stage-grid">
-            <div class="stage-col left-col">
+            <div class="stage-col left-col" id="sudoku-left-col">
+            <button class="panel-toggle-btn" id="sudoku-toggle-left" title="패널 접기/펼치기"><i class="fa-solid fa-chevron-left"></i></button>
+            <div class="panel-content">
                 <div class="mini-panel-card">
                     <div class="panel-header"><i class="fa-solid fa-chart-simple"></i> STATISTICS</div>
                     <div class="stat-grid">
@@ -39,7 +41,8 @@ window.YmMiniGameHub.register('sudoku', {
                         • 충돌하는 숫자는 빨간색으로 표시됩니다.
                     </p>
                 </div>
-            </div>
+            
+            </div></div>
 
             <div class="stage-col center-col">
                 <div class="sudoku-board-frame">
@@ -52,7 +55,9 @@ window.YmMiniGameHub.register('sudoku', {
                 </div>
             </div>
 
-            <div class="stage-col right-col">
+            <div class="stage-col right-col" id="sudoku-right-col">
+            <button class="panel-toggle-btn" id="sudoku-toggle-right" title="패널 접기/펼치기"><i class="fa-solid fa-chevron-right"></i></button>
+            <div class="panel-content">
                 <div class="mini-panel-card">
                     <div class="panel-header"><i class="fa-solid fa-keyboard"></i> 숫자 입력</div>
                     <div class="number-pad">
@@ -72,7 +77,8 @@ window.YmMiniGameHub.register('sudoku', {
                         <button id="sudoku-btn-hint" class="btn-banner primary"><i class="fa-solid fa-wand-magic-sparkles"></i> 힌트</button>
                     </div>
                 </div>
-            </div>
+            
+            </div></div>
         </div>
     </div>`;
 
@@ -436,6 +442,17 @@ window.YmMiniGameHub.register('sudoku', {
         selectCell(r, c);
     }
 
+    function setupPanelToggle(colId, btnId, iconOpen, iconClosed) {
+        const col = container.querySelector('#' + colId);
+        const btn = container.querySelector('#' + btnId);
+        if (!col || !btn) return;
+        btn.onclick = () => {
+            const collapsed = col.classList.toggle('collapsed');
+            const icon = btn.querySelector('i');
+            if (icon) icon.className = collapsed ? iconClosed : iconOpen;
+        };
+    }
+
     return {
         init() {
             canvas.addEventListener('click', onCanvasClick);
@@ -455,7 +472,11 @@ window.YmMiniGameHub.register('sudoku', {
             btnOverlay.onclick = () => newGame(difficulty);
 
             newGame('easy');
-        },
+        
+
+            setupPanelToggle('sudoku-left-col', 'sudoku-toggle-left', 'fa-solid fa-chevron-left', 'fa-solid fa-chevron-right');
+            setupPanelToggle('sudoku-right-col', 'sudoku-toggle-right', 'fa-solid fa-chevron-right', 'fa-solid fa-chevron-left');
+},
         destroy() {
             clearInterval(timerInterval);
             canvas.removeEventListener('click', onCanvasClick);

@@ -15,7 +15,9 @@ window.YmMiniGameHub.register('minesweeper', {
             </div>
         </div>
         <div class="mine-stage-grid">
-            <div class="stage-col left-col">
+            <div class="stage-col left-col" id="mine-left-col">
+                <button class="panel-toggle-btn" id="mine-toggle-left" title="패널 접기/펼치기"><i class="fa-solid fa-chevron-left"></i></button>
+                <div class="panel-content">
                 <div class="mini-panel-card">
                     <div class="panel-header"><i class="fa-solid fa-sliders"></i> 난이도 선택</div>
                     <div class="diff-btn-group">
@@ -41,6 +43,7 @@ window.YmMiniGameHub.register('minesweeper', {
                         <div class="stat-box"><span class="stat-lbl">고급</span><span id="best-expert" class="stat-val">-</span></div>
                     </div>
                 </div>
+                </div>
             </div>
             <div class="stage-col center-col">
                 <div class="mine-board-frame">
@@ -57,7 +60,9 @@ window.YmMiniGameHub.register('minesweeper', {
                     </div>
                 </div>
             </div>
-            <div class="stage-col right-col">
+            <div class="stage-col right-col" id="mine-right-col">
+                <button class="panel-toggle-btn" id="mine-toggle-right" title="패널 접기/펼치기"><i class="fa-solid fa-chevron-right"></i></button>
+                <div class="panel-content">
                 <div class="mini-panel-card">
                     <div class="panel-header"><i class="fa-regular fa-keyboard"></i> 조작 가이드</div>
                     <ul class="key-guide-list">
@@ -70,6 +75,7 @@ window.YmMiniGameHub.register('minesweeper', {
                 <div class="mini-panel-card">
                     <div class="panel-header"><i class="fa-regular fa-lightbulb"></i> 첫 클릭 보장</div>
                     <p class="tip-text">• 첫 번째 클릭은 100% 안전하며 넓은 빈 공간이 먼저 열립니다.</p>
+                </div>
                 </div>
             </div>
         </div>
@@ -310,6 +316,17 @@ window.YmMiniGameHub.register('minesweeper', {
         });
     }
 
+    function setupPanelToggle(colId, btnId, iconOpen, iconClosed) {
+        const col = container.querySelector('#' + colId);
+        const btn = container.querySelector('#' + btnId);
+        if (!col || !btn) return;
+        btn.onclick = () => {
+            const collapsed = col.classList.toggle('collapsed');
+            const icon = btn.querySelector('i');
+            if (icon) icon.className = collapsed ? iconClosed : iconOpen;
+        };
+    }
+
     return {
         init() {
             btnRestart.onclick = reset;
@@ -329,6 +346,9 @@ window.YmMiniGameHub.register('minesweeper', {
                     reset();
                 };
             });
+
+            setupPanelToggle('mine-left-col', 'mine-toggle-left', 'fa-solid fa-chevron-left', 'fa-solid fa-chevron-right');
+            setupPanelToggle('mine-right-col', 'mine-toggle-right', 'fa-solid fa-chevron-right', 'fa-solid fa-chevron-left');
 
             loadBestScores();
             reset();

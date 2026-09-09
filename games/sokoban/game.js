@@ -17,7 +17,9 @@ window.YmMiniGameHub.register('sokoban', {
         </div>
 
         <div class="sokoban-stage-grid">
-            <div class="stage-col left-col">
+            <div class="stage-col left-col" id="soko-left-col">
+            <button class="panel-toggle-btn" id="soko-toggle-left" title="패널 접기/펼치기"><i class="fa-solid fa-chevron-left"></i></button>
+            <div class="panel-content">
                 <div class="mini-panel-card">
                     <div class="panel-header"><i class="fa-solid fa-chart-simple"></i> STATISTICS</div>
                     <div class="stat-grid">
@@ -35,7 +37,8 @@ window.YmMiniGameHub.register('sokoban', {
                         • 모든 박스를 목표 지점에 올리면 레벨 클리어!
                     </p>
                 </div>
-            </div>
+            
+            </div></div>
 
             <div class="stage-col center-col">
                 <div class="sokoban-board-frame">
@@ -48,7 +51,9 @@ window.YmMiniGameHub.register('sokoban', {
                 </div>
             </div>
 
-            <div class="stage-col right-col">
+            <div class="stage-col right-col" id="soko-right-col">
+            <button class="panel-toggle-btn" id="soko-toggle-right" title="패널 접기/펼치기"><i class="fa-solid fa-chevron-right"></i></button>
+            <div class="panel-content">
                 <div class="mini-panel-card">
                     <div class="panel-header"><i class="fa-regular fa-keyboard"></i> 조작 가이드</div>
                     <ul class="key-guide-list">
@@ -67,7 +72,8 @@ window.YmMiniGameHub.register('sokoban', {
                         <button class="touch-btn" data-dir="right"><i class="fa-solid fa-arrow-right"></i></button>
                     </div>
                 </div>
-            </div>
+            
+            </div></div>
         </div>
     </div>`;
 
@@ -333,6 +339,17 @@ window.YmMiniGameHub.register('sokoban', {
         }
     }
 
+    function setupPanelToggle(colId, btnId, iconOpen, iconClosed) {
+        const col = container.querySelector('#' + colId);
+        const btn = container.querySelector('#' + btnId);
+        if (!col || !btn) return;
+        btn.onclick = () => {
+            const collapsed = col.classList.toggle('collapsed');
+            const icon = btn.querySelector('i');
+            if (icon) icon.className = collapsed ? iconClosed : iconOpen;
+        };
+    }
+
     return {
         init() {
             btnRestart.onclick = restartLevel;
@@ -359,7 +376,11 @@ window.YmMiniGameHub.register('sokoban', {
             currentLevelIndex = 0;
             loadLevel(currentLevelIndex);
             hub.setStatusBadge('READY (SOKOBAN)', '');
-        },
+        
+
+            setupPanelToggle('soko-left-col', 'soko-toggle-left', 'fa-solid fa-chevron-left', 'fa-solid fa-chevron-right');
+            setupPanelToggle('soko-right-col', 'soko-toggle-right', 'fa-solid fa-chevron-right', 'fa-solid fa-chevron-left');
+},
         destroy() {
             window.removeEventListener('keydown', onKeyDown);
         }

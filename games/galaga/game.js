@@ -17,7 +17,9 @@ window.YmMiniGameHub.register('galaga', {
         </div>
 
         <div class="galaga-stage-grid">
-            <div class="stage-col left-col">
+            <div class="stage-col left-col" id="gal-left-col">
+            <button class="panel-toggle-btn" id="gal-toggle-left" title="패널 접기/펼치기"><i class="fa-solid fa-chevron-left"></i></button>
+            <div class="panel-content">
                 <div class="mini-panel-card">
                     <div class="panel-header"><i class="fa-solid fa-chart-simple"></i> STATISTICS</div>
                     <div class="stat-grid">
@@ -35,7 +37,8 @@ window.YmMiniGameHub.register('galaga', {
                         <li><span>일시 정지</span> <kbd>P</kbd></li>
                     </ul>
                 </div>
-            </div>
+            
+            </div></div>
 
             <div class="stage-col center-col">
                 <div class="galaga-board-frame">
@@ -48,7 +51,9 @@ window.YmMiniGameHub.register('galaga', {
                 </div>
             </div>
 
-            <div class="stage-col right-col">
+            <div class="stage-col right-col" id="gal-right-col">
+            <button class="panel-toggle-btn" id="gal-toggle-right" title="패널 접기/펼치기"><i class="fa-solid fa-chevron-right"></i></button>
+            <div class="panel-content">
                 <div class="mini-panel-card">
                     <div class="panel-header"><i class="fa-regular fa-lightbulb"></i> 게임 방법</div>
                     <p class="tip-text">
@@ -65,7 +70,8 @@ window.YmMiniGameHub.register('galaga', {
                         <button class="touch-btn" data-action="right"><i class="fa-solid fa-arrow-right"></i></button>
                     </div>
                 </div>
-            </div>
+            
+            </div></div>
         </div>
     </div>`;
 
@@ -632,6 +638,17 @@ window.YmMiniGameHub.register('galaga', {
     }
     function onKeyUp(e) { keysDown[e.code] = false; }
 
+    function setupPanelToggle(colId, btnId, iconOpen, iconClosed) {
+        const col = container.querySelector('#' + colId);
+        const btn = container.querySelector('#' + btnId);
+        if (!col || !btn) return;
+        btn.onclick = () => {
+            const collapsed = col.classList.toggle('collapsed');
+            const icon = btn.querySelector('i');
+            if (icon) icon.className = collapsed ? iconClosed : iconOpen;
+        };
+    }
+
     return {
         init() {
             btnStart.onclick = start;
@@ -677,7 +694,11 @@ window.YmMiniGameHub.register('galaga', {
             this._fireTimer = setInterval(() => {
                 if (keysDown['Space']) tryFire(performance.now());
             }, 50);
-        },
+        
+
+            setupPanelToggle('gal-left-col', 'gal-toggle-left', 'fa-solid fa-chevron-left', 'fa-solid fa-chevron-right');
+            setupPanelToggle('gal-right-col', 'gal-toggle-right', 'fa-solid fa-chevron-right', 'fa-solid fa-chevron-left');
+},
         destroy() {
             isPlaying = false;
             cancelAnimationFrame(animId);

@@ -10,10 +10,19 @@
 .sub-actions { display: flex; gap: 0.5rem; }
 
 .territory-stage-grid {
-    display: grid; grid-template-columns: 280px 1fr 280px; gap: 1.5rem;
+    display: grid; grid-template-columns: 240px 1fr 240px; gap: 1.5rem;
     width: 100%; max-width: 1350px; margin: 0 auto; align-items: start;
 }
-.stage-col { display: flex; flex-direction: column; gap: 1.25rem; }
+.stage-col { display: flex; flex-direction: column; gap: 1.25rem; position: relative; transition: flex-basis 0.25s ease, width 0.25s ease, min-width 0.25s ease; }
+.stage-col.collapsed { flex: 0 0 40px; width: 40px; min-width: 40px; overflow: hidden; }
+.stage-col.collapsed .panel-content { display: none; }
+.panel-content { display: flex; flex-direction: column; gap: 1.25rem; }
+.panel-toggle-btn {
+    align-self: flex-start; width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--app-border);
+    background: var(--app-bg-card); color: var(--app-text-primary); cursor: pointer;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.panel-toggle-btn:hover { background: var(--app-bg-card-hover); }
 
 .mini-panel-card {
     background: var(--app-bg-card); border: 1px solid var(--app-border);
@@ -40,12 +49,13 @@
 .key-group { display: inline-flex; gap: 0.3rem; }
 kbd { background: var(--app-bg-main); color: var(--app-text-primary); padding: 0.15rem 0.45rem; border-radius: 4px; font-size: 0.72rem; font-weight: 600; border: 1px solid var(--app-border); }
 
-.center-col { display: flex; justify-content: center; align-items: center; }
+.center-col { display: flex; justify-content: center; align-items: center; min-width: 0; }
 .territory-board-frame {
     position: relative; background: #090d16; border: 2px solid var(--app-border);
     border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.35); overflow: hidden;
+    width: 100%; max-width: 700px;
 }
-#terr-board { display: block; }
+#terr-board { display: block; width: 100%; height: auto; }
 
 .territory-touch-controls { display: flex; flex-direction: column; gap: 0.5rem; width: 100%; }
 .touch-row { display: flex; gap: 0.5rem; width: 100%; justify-content: center; }

@@ -16,7 +16,9 @@ window.YmMiniGameHub.register('holdem', {
         </div>
 
         <div class="holdem-stage-grid">
-            <div class="stage-col left-col">
+            <div class="stage-col left-col" id="holdem-left-col">
+            <button class="panel-toggle-btn" id="holdem-toggle-left" title="패널 접기/펼치기"><i class="fa-solid fa-chevron-left"></i></button>
+            <div class="panel-content">
                 <div class="mini-panel-card">
                     <div class="panel-header"><i class="fa-solid fa-chart-simple"></i> STATISTICS</div>
                     <div class="stat-grid">
@@ -39,7 +41,8 @@ window.YmMiniGameHub.register('holdem', {
                     <div class="panel-header"><i class="fa-solid fa-list"></i> 핸드 기록</div>
                     <div id="holdem-log" class="holdem-log"></div>
                 </div>
-            </div>
+            
+            </div></div>
 
             <div class="stage-col center-col">
                 <div class="holdem-board-frame">
@@ -66,7 +69,9 @@ window.YmMiniGameHub.register('holdem', {
                 </div>
             </div>
 
-            <div class="stage-col right-col">
+            <div class="stage-col right-col" id="holdem-right-col">
+            <button class="panel-toggle-btn" id="holdem-toggle-right" title="패널 접기/펼치기"><i class="fa-solid fa-chevron-right"></i></button>
+            <div class="panel-content">
                 <div class="mini-panel-card">
                     <div class="panel-header"><i class="fa-solid fa-ranking-star"></i> 족보 순위 (낮음 → 높음)</div>
                     <ul class="key-guide-list">
@@ -81,7 +86,8 @@ window.YmMiniGameHub.register('holdem', {
                         <li><span>스트레이트 플러시</span></li>
                     </ul>
                 </div>
-            </div>
+            
+            </div></div>
         </div>
     </div>`;
 
@@ -739,6 +745,17 @@ window.YmMiniGameHub.register('holdem', {
         draw();
     }
 
+    function setupPanelToggle(colId, btnId, iconOpen, iconClosed) {
+        const col = container.querySelector('#' + colId);
+        const btn = container.querySelector('#' + btnId);
+        if (!col || !btn) return;
+        btn.onclick = () => {
+            const collapsed = col.classList.toggle('collapsed');
+            const icon = btn.querySelector('i');
+            if (icon) icon.className = collapsed ? iconClosed : iconOpen;
+        };
+    }
+
     return {
         init() {
             btnStart.onclick = startSession;
@@ -782,7 +799,11 @@ window.YmMiniGameHub.register('holdem', {
             setActionBarEnabled(false);
             updateStats();
             draw();
-        },
+        
+
+            setupPanelToggle('holdem-left-col', 'holdem-toggle-left', 'fa-solid fa-chevron-left', 'fa-solid fa-chevron-right');
+            setupPanelToggle('holdem-right-col', 'holdem-toggle-right', 'fa-solid fa-chevron-right', 'fa-solid fa-chevron-left');
+},
         destroy() {
             clearTimeout(aiTimeoutId);
         }

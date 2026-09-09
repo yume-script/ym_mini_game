@@ -16,7 +16,9 @@ window.YmMiniGameHub.register('othello', {
         </div>
 
         <div class="othello-stage-grid">
-            <div class="stage-col left-col">
+            <div class="stage-col left-col" id="othello-left-col">
+            <button class="panel-toggle-btn" id="othello-toggle-left" title="패널 접기/펼치기"><i class="fa-solid fa-chevron-left"></i></button>
+            <div class="panel-content">
                 <div class="mini-panel-card">
                     <div class="panel-header"><i class="fa-solid fa-chart-simple"></i> STATISTICS</div>
                     <div class="stat-grid">
@@ -37,7 +39,8 @@ window.YmMiniGameHub.register('othello', {
                         • 둘 다 둘 곳이 없으면 게임이 끝나고, 돌이 더 많은 쪽이 승리합니다.
                     </p>
                 </div>
-            </div>
+            
+            </div></div>
 
             <div class="stage-col center-col">
                 <div class="othello-board-frame">
@@ -50,7 +53,9 @@ window.YmMiniGameHub.register('othello', {
                 </div>
             </div>
 
-            <div class="stage-col right-col">
+            <div class="stage-col right-col" id="othello-right-col">
+            <button class="panel-toggle-btn" id="othello-toggle-right" title="패널 접기/펼치기"><i class="fa-solid fa-chevron-right"></i></button>
+            <div class="panel-content">
                 <div class="mini-panel-card">
                     <div class="panel-header"><i class="fa-regular fa-keyboard"></i> 조작 가이드</div>
                     <ul class="key-guide-list">
@@ -64,7 +69,8 @@ window.YmMiniGameHub.register('othello', {
                         <li><span><i class="fa-regular fa-circle" style="color:#f8fafc;"></i> AI (백돌)</span></li>
                     </ul>
                 </div>
-            </div>
+            
+            </div></div>
         </div>
     </div>`;
 
@@ -463,6 +469,17 @@ window.YmMiniGameHub.register('othello', {
         draw();
     }
 
+    function setupPanelToggle(colId, btnId, iconOpen, iconClosed) {
+        const col = container.querySelector('#' + colId);
+        const btn = container.querySelector('#' + btnId);
+        if (!col || !btn) return;
+        btn.onclick = () => {
+            const collapsed = col.classList.toggle('collapsed');
+            const icon = btn.querySelector('i');
+            if (icon) icon.className = collapsed ? iconClosed : iconOpen;
+        };
+    }
+
     return {
         init() {
             btnStart.onclick = start;
@@ -471,7 +488,11 @@ window.YmMiniGameHub.register('othello', {
             canvas.addEventListener('click', onCanvasClick);
 
             reset();
-        },
+        
+
+            setupPanelToggle('othello-left-col', 'othello-toggle-left', 'fa-solid fa-chevron-left', 'fa-solid fa-chevron-right');
+            setupPanelToggle('othello-right-col', 'othello-toggle-right', 'fa-solid fa-chevron-right', 'fa-solid fa-chevron-left');
+},
         destroy() {
             clearTimeout(aiTimeoutId);
             canvas.removeEventListener('click', onCanvasClick);
